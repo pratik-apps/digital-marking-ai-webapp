@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Digital Marketing AI Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Digital Marketing AI Coach</h1>
+      <p class="sub">Ask anything about SEO, ads, funnels and more.</p>
+      <div class="status">
+        <span id="conn-status">Connecting...</span>
+      </div>
+      <div class="hint">
+        <strong>Sample prompts:</strong>
+        <ul>
+          <li>Explain the difference between SEO and SEM.</li>
+          <li>How to improve click-through rate on Google Ads?</li>
+          <li>Give a simple content calendar for Instagram.</li>
+        </ul>
+      </div>
+    </header>
+
+    <main id="chat-window"></main>
+
+    <footer>
+      <input id="passphrase" type="password"
+             placeholder="Type key only when you want to decrypt" />
+      <div class="input-row">
+        <input id="message-input" type="text"
+               placeholder="Ask your digital marketing question..."
+               autocomplete="off">
+        <button id="send-btn">Send</button>
+      </div>
+      <small class="disclaimer">
+        Note: This prototype AI may generate limited or generic digital marketing guidance for educational purposes only.
+      </small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
