@@ -10,7 +10,7 @@ const statusSpan=document.getElementById('conn-status');
 
 let ws;
 
-function connect(){const loc=window.location;const proto=loc.protocol==='https:'?'wss:':'ws:';const wsUrl=proto+'//'+loc.host;ws=new WebSocket(wsUrl);ws.addEventListener('open',()=>{statusSpan.textContent='Connected to AI node';});ws.addEventListener('close',()=>{statusSpan.textContent='Disconnected. Reconnecting...';setTimeout(connect,2000);});ws.addEventListener('message',event=>{const payload=JSON.parse(event.data);if(payload.type==='cipher'){handleIncomingCipher(payload);}});}connect();
+function connect(){const loc=window.location;const proto=loc.protocol==='https:'?'wss:':'ws:';const wsUrl=proto+'//'+loc.host;ws=new WebSocket(wsUrl);ws.addEventListener('open',()=>{statusSpan.textContent='Connected to AI node';});ws.addEventListener('close',()=>{statusSpan.textContent='Disconnected. Reconnecting...';setTimeout(connect,2000);});ws.addEventListener('message',async event=>{let text;if(typeof event.data==='string'){text=event.data;}else if(event.data instanceof Blob){text=await event.data.text();}else{console.warn('Unknown WS data type',typeof event.data);return;}let payload;try{payload=JSON.parse(text);}catch(e){console.error('WS JSON parse error',e,text);return;}if(payload.type==='cipher'){handleIncomingCipher(payload);}});}connect();
 
 function createMessageElement({id,cipher,plain}){const wrapper=document.createElement('div');wrapper.className='message';wrapper.dataset.id=id;const meta=document.createElement('span');meta.className='meta';meta.textContent='AI / Partner (encrypted)';const cipherDiv=document.createElement('div');cipherDiv.className='cipher';cipherDiv.textContent=cipher;const plainDiv=document.createElement('div');plainDiv.className='plain hidden';plainDiv.textContent=plain||'';wrapper.appendChild(meta);wrapper.appendChild(cipherDiv);wrapper.appendChild(plainDiv);chatWindow.appendChild(wrapper);chatWindow.scrollTop=chatWindow.scrollHeight;return{wrapper,plainDiv};}
 
@@ -20,6 +20,6 @@ function handleIncomingCipher({id,body}){createMessageElement({id,cipher:body,pl
 
 function tryDecryptAll(){const key=passInput.value.trim();if(!key)return;document.querySelectorAll('.message').forEach(msg=>{const cipherEl=msg.querySelector('.cipher');const plainEl=msg.querySelector('.plain');const cipher=cipherEl.textContent;const plain=decryptMessage(cipher,key);if(plain){plainEl.textContent=plain;plainEl.classList.remove('hidden');}else{plainEl.textContent='[Wrong key]';plainEl.classList.remove('hidden');}});}
 
-passInput.addEventListener('change',tryDecryptAll);
+passInput.addEventListener('change',()=>{console.log('onChange started');tryDecryptAll();console.log('onChange completed');});
 passInput.addEventListener('blur',tryDecryptAll);
 sendBtn.addEventListener('click',sendPlainMessage);input.addEventListener('keydown',e=>{if(e.key==='Enter')sendPlainMessage();});
